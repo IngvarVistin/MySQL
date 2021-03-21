@@ -3,10 +3,10 @@ SHOW tables;
 
 -- Кто посещал мой профиль.
 CREATE TABLE visitor (
- user_id BIGINT UNSIGNED NOT NULL, -- id страница `Пети` (профиль, который посящают)
+ user_id BIGINT UNSIGNED NOT NULL, -- id профайла `Пети` (профиль, который посящают)
  visit_id BIGINT UNSIGNED NOT NULL, -- id Посетитель `Вася`
  in_visited DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP -- время, когда `Вася` посешал страницу `Пети`
- 
+ CONSTRAINT fk_visit_user_id FOREIGN KEY (visit_id) REFERENCES profiles (user_id) -- приыязываем посещение к профайду `Пети`
  );
 
 
