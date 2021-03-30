@@ -50,12 +50,13 @@ VALUES
   ('Мария', '2006-08-29', '12.01.2017 8:56', '12.01.2017 8:56');
  
 -- Необходимо преобразовать поля к типу DATETIME, сохранив введённые ранее значения.
-ALTER TABLE users ADD COLUMN created_at_n datetime, 
-				  ADD COLUMN updated_at_n datetime;
- UPDATE users 
-  SET created_at_n = str_to_date(created_at, '%d.%m.%Y %H:%i'),
-      updated_at_n = str_to_date(updated_at, '%d.%m.%Y %H:%i');
-ALTER TABLE users DROP created_at, DROP updated_at;
+/*ALTER TABLE users ADD COLUMN created_at_n datetime, 
+    			  ADD COLUMN updated_at_n datetime;*/
+  UPDATE users 
+   SET created_at = str_to_date(created_at, '%d.%m.%Y %k:%i'),
+       updated_at = str_to_date(updated_at, '%d.%m.%Y %k:%i');
+  ALTER TABLE users MODIFY COLUMN created_at datetime;
+
 
 
 -- Необходимо извлечь пользователей, родившихся в августе и мае. Месяцы заданы в виде списка английских названий (may, august)
