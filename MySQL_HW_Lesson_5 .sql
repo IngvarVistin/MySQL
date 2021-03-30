@@ -50,10 +50,14 @@ VALUES
   ('Мария', '2006-08-29', '12.01.2017 8:56', '12.01.2017 8:56');
  
 -- Необходимо преобразовать поля к типу DATETIME, сохранив введённые ранее значения.
-UPDATE users 
-  SET created_at = str_to_date(created_at, '%d.%m.%Y %H:%i')
-  SET updated_at = str_to_date(updated_at, '%d.%m.%Y %H:%i');
-  
+ALTER TABLE users ADD COLUMN created_at_n datetime, 
+				  ADD COLUMN updated_at_n datetime;
+ UPDATE users 
+  SET created_at_n = str_to_date(created_at, '%d.%m.%Y %H:%i'),
+      updated_at_n = str_to_date(updated_at, '%d.%m.%Y %H:%i');
+ALTER TABLE users DROP created_at, DROP updated_at;
+
+
 -- Необходимо извлечь пользователей, родившихся в августе и мае. Месяцы заданы в виде списка английских названий (may, august)
 
   SELECT name, created_at, updated_at, date_format(birthday_at, '%M %Y') FROM users 
@@ -113,20 +117,19 @@ INSERT INTO catalogs VALUES
   SELECT*FROM catalogs WHERE id IN (5, 1, 2) 
   ORDER BY field(id, 5, 1, 2); 
 
---«Агрегация данных» Подсчитайте средний возраст пользователей в таблице users.
+-- «Агрегация данных» Подсчитайте средний возраст пользователей в таблице users.
 USE shop;
 SHOW tables;
 DESCRIBE users;
 SELECT*FROM users;
 
-SELECT name, timestampdiff(YEAR, birthday_at, now()) AS age FROM users;
+SELECT avg(timestampdiff(YEAR, birthday_at, now())) AS mid_age FROM users;
 
 /*Подсчитайте количество дней рождения, которые приходятся на каждый из дней недели. 
 Следует учесть, что необходимы дни недели текущего года, а не года рождения.*/ -- Я что-то долго в задание вникал. Можно было и проще выразиться)))
 
-SELECT COUNT(*) as stats from (SELECT DAYOFWEEK(CONCAT(YEAR(NOW()),'-',MONTH(birthday),'-',DAYOFMONTH(birthday))) as date from profiles) as stats where date=1;
- 
-SELECT name, birthday_at, weekday(concat(YEAR(now()),'-',EXTRACT(MONTH FROM birthday_at),'-',EXTRACT(day FROM birthday_at))) AS age FROM users;
+SELECT weekday(concat(YEAR(now()),'-',EXTRACT(MONTH FROM birthday_at),'-',EXTRACT(day FROM birthday_at))) AS day_week,
+	   count(*) AS birthday FROM users GROUP BY day_week;
 -- 0 - понедельник, 6 - суббота
 
 /*(по желанию) Подсчитайте произведение чисел в столбце таблицы.*/
